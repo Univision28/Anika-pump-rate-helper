@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Anika Pump Rate Helper</title>
+<meta name="description" content="Simple pump rate helper — iPhone friendly.">
+
+<style>
+  :root{
+    --accent:#4f46e5; --bg:#f6f7fb; --card:#fff; --good:#e6ffed; --bad:#fff1f2;
+    --text:#1f2937; --muted:#6b7280;
+  }
+  html,body{height:100%;margin:0;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text); -webkit-text-size-adjust:100%}
+  .wrap{max-width:720px;margin:18px auto;padding:14px;}
+  h1{margin:0 0 6px;font-size:1.4rem}
+  .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 20px rgba(2,6,23,0.06);margin-bottom:14px}
+  .hint{color:var(--muted);font-size:0.92rem;margin-bottom:10px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+  label{display:block;font-weight:600;margin-bottom:6px}
+  select,input[type=number]{padding:10px;border-radius:10px;border:1px solid #d1d5db;background:#fff;font-size:1rem}
+  .modes{display:flex;gap:8px}
+  .mode-btn{flex:1;padding:10px;border-radius:10px;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer}
+  .mode-btn.active{background:var(--accent);color:#fff}
+  .time-selects{display:flex;gap:8px;align-items:center;margin-top:6px}
+  .time-selects select{min-width:76px}
+  .result{background:var(--good);padding:14px;border-radius:10px;text-align:center;font-weight:800;font-size:1.3rem;color:#0f5132}
+  .sub{font-size:0.9rem;color:#0f5132;margin-top:6px;text-align:center}
+  .cap-note{background:var(--bad);color:#7f1d1d;padding:10px;border-radius:8px;margin-top:10px;font-weight:700;text-align:center}
+  .small{font-size:0.88rem;color:var(--muted)}
+  .footer{font-size:0.82rem;color:var(--muted);margin-top:10px}
+  .hidden{display:none}
+  button.small{padding:8px 10px;border-radius:8px;border:1px solid #c7c7d1;background:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Anika Pump Rate Helper</h1>
+    <div class="hint">Target today: <strong>2500 ml</strong>. Simple — select current time (or press Now), choose finish, type INFO if catch-up.</div>
+
+    <div class="card" aria-labelledby="modeHeader">
+      <div id="modeHeader" style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <label>Mode</label>
+          <div class="modes">
+            <button id="btnMorning" class="mode-btn active" type="button">Morning start</button>
+            <button id="btnCatchup" class="mode-btn" type="button">Afternoon catch-up</button>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="small">Rules</div>
+          <div class="small">Morning = 2500 ÷ hours left<br>Catch-up = (2500 − INFO) ÷ hours left</div>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #eee;margin:12px 0">
+
+      <div>
+        <label>Current time</label>
+        <div class="time-selects" aria-label="Current time selectors">
+          <select id="curHour" title="hour"></select>
+          <select id="curMinute" title="minute"></select>
+          <select id="curAM" title="AM or PM"><option>AM</option><option>PM</option></select>
+          <button id="nowBtn" class="small" style="margin-left:6px">Now</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label>Finish time (bedtime)</label>
+        <select id="finishPreset" style="width:100%;padding:10px">
+          <option value="20:00">8:00 pm</option>
+          <option value="20:30" selected>8:30 pm</option>
+          <option value="21:00">9:00 pm</option>
+          <option value="21:30">9:30 pm</option>
+          <option value="22:00">10:00 pm</option>
+          <option value="custom">Custom…</option>
+        </select>
+
+        <div id="finishCustom" class="time-selects hidden" style="margin-top:8px">
+          <select id="finHour"></select>
+          <select id="finMinute"></select>
+          <select id="finAM"><option>AM</option><option>PM</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>INFO already given (ml)</label>
+      <input id="info" type="number" min="0" step="1" value="0" />
+
+      <div id="result" style="margin-top:12px">Set pump to 0 ml/hr</div>
+      <div id="sub" class="sub">Waiting for times and INFO</div>
+
+      <div id="capNote" class="cap-note hidden"></div>
+      <div id="estFinish" class="small"></div>
+
+      <div class="footer">If rate is capped, call Shannon and follow care plan. Never set pump above 300 ml/hr.</div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const TARGET = 2500;
+  const MAX = 300;
+  // elements
+  const curHour = document.getElementById('curHour');
+  const curMinute = document.getElementById('curMinute');
+  const curAM = document.getElementById('curAM');
+  const finHour = document.getElementById('finHour');
+  const finMinute = document.getElementById('finMinute');
+  const finAM = document.getElementById('finAM');
+
+  const finishPreset = document.getElementById('finishPreset');
+  const finishCustom = document.getElementById('finishCustom');
+  const nowBtn = document.getElementById('nowBtn');
+  const infoEl = document.getElementById('info');
+
+  const btnMorning = document.getElementById('btnMorning');
+  const btnCatchup = document.getElementById('btnCatchup');
+
+  const resultBox = document.getElementById('result');
+  const sub = document.getElementById('sub');
+  const capNote = document.getElementById('capNote');
+  const estFinish = document.getElementById('estFinish');
+
+  let mode = 'morning';
+
+  // populate hour/minute selects (1-12, 00-59)
+  function populate() {
+    for(let h=1; h<=12; h++){
+      const opt = document.createElement('option'); opt.value = String(h).padStart(2,'0'); opt.text = String(h);
+      curHour.appendChild(opt);
+      finHour.appendChild(opt.cloneNode(true));
+    }
+    for(let m=0; m<60; m++){
+      const txt = String(m).padStart(2,'0');
+      const o = document.createElement('option'); o.value = txt; o.text = txt;
+      curMinute.appendChild(o);
+      finMinute.appendChild(o.cloneNode(true));
+    }
+  }
+
+  populate();
+
+  // set current selectors to now
+  function setNowSelectors() {
+    const d = new Date();
+    let hh = d.getHours(); const mm = d.getMinutes();
+    const am = hh >= 12 ? 'PM' : 'AM';
+    hh = hh % 12; if(hh===0) hh=12;
+    curHour.value = String(hh).padStart(2,'0');
+    curMinute.value = String(mm).padStart(2,'0');
+    curAM.value = am;
+  }
+  setNowSelectors();
+
+  nowBtn.addEventListener('click', function(){ setNowSelectors(); calculate(); });
+
+  // mode toggles
+  btnMorning.addEventListener('click', () => { mode='morning'; btnMorning.classList.add('active'); btnCatchup.classList.remove('active'); infoEl.value = 0; calculate(); });
+  btnCatchup.addEventListener('click', () => { mode='catchup'; btnCatchup.classList.add('active'); btnMorning.classList.remove('active'); calculate(); });
+
+  // finish preset change
+  finishPreset.addEventListener('change', () => {
+    if(finishPreset.value === 'custom') {
+      finishCustom.classList.remove('hidden');
+      // default custom to 8:30 PM
+      finHour.value = '08'; finMinute.value = '30'; finAM.value = 'PM';
+    } else {
+      finishCustom.classList.add('hidden');
+    }
+    calculate();
+  });
+
+  // helpers: convert 12hr selects to minutes since midnight
+  function toMins(hh, mm, ampm) {
+    let h = parseInt(hh,10);
+    const m = parseInt(mm,10);
+    const ap = (ampm+'').toUpperCase();
+    if(ap==='AM') { if(h===12) h = 0; }
+    else { if(h!==12) h = h + 12; }
+    return h*60 + m;
+  }
+
+  // convert minutes to display "h:MM AM/PM"
+  function minsToDisplay(mins) {
+    mins = Math.round(mins) % 1440; if(mins<0) mins += 1440;
+    let h = Math.floor(mins/60); let m = mins % 60;
+    const ap = h>=12 ? 'PM' : 'AM'; h = h % 12; if(h===0) h=12;
+    return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+  }
+
+  // main calculate
+  function calculate() {
+    capNote.classList.add('hidden'); capNote.textContent=''; estFinish.textContent=''; sub.textContent='';
+
+    const curMins = toMins(curHour.value, curMinute.value, curAM.value);
+    let finishMins;
+    if(finishPreset.value === 'custom') {
+      finishMins = toMins(finHour.value, finMinute.value, finAM.value);
+    } else {
+      // preset stored as 24-hour "HH:MM"
+      const p = finishPreset.value.split(':'); finishMins = parseInt(p[0],10)*60 + parseInt(p[1],10);
+    }
+
+    if(typeof curMins !== 'number' || typeof finishMins !== 'number') {
+      resultBox.textContent = 'Set pump to 0 ml/hr';
+      sub.textContent = 'Waiting for times and INFO';
+      return;
+    }
+
+    if(finishMins <= curMins) {
+      resultBox.textContent = 'Set pump to 0 ml/hr';
+      sub.textContent = 'Finish time must be later than current time.';
+      return;
+    }
+
+    const minsLeft = finishMins - curMins;
+    const hrsLeft = minsLeft / 60;
+    let info = parseInt(infoEl.value,10); if(isNaN(info) || info < 0) info = 0;
+
+    let remaining = TARGET;
+    if(mode === 'catchup') {
+      remaining = TARGET - info; if(remaining < 0) remaining = 0;
+    }
+
+    if(remaining === 0) {
+      resultBox.textContent = 'Set pump to 0 ml/hr';
+      sub.textContent = 'Target already reached based on INFO.';
+      return;
+    }
+
+    const rawRate = remaining / hrsLeft;
+    let rate = Math.ceil(rawRate);
+    let capped = false;
+    if(rate > MAX) { rate = MAX; capped = true; }
+
+    resultBox.textContent = `Set pump to ${rate} ml/hr`;
+    sub.textContent = (mode === 'morning' ? 'Morning — INFO = 0.' : `Catch-up — INFO = ${Math.round(info)} ml.`) + ` Hours left: ${hrsLeft.toFixed(2)}. Remaining: ${Math.round(remaining)} ml.`;
+
+    if(capped) {
+      capNote.classList.remove('hidden');
+      capNote.textContent = 'Rate capped at 300 ml/hr — please call Shannon to let her know.';
+      const hoursNeededAt300 = remaining / MAX;
+      const finishAt300 = Math.round(curMins + hoursNeededAt300*60);
+      estFinish.textContent = 'Estimated finish time at 300 ml/hr: ' + minsToDisplay(finishAt300);
+    }
+  }
+
+  // event listeners for inputs
+  [curHour, curMinute, curAM, finHour, finMinute, finAM, finishPreset, infoEl].forEach(el => {
+    el.addEventListener('input', calculate);
+    el.addEventListener('change', calculate);
+  });
+
+  // initial calculate
+  calculate();
+})();
+</script>
+</body>
+
+</html>
