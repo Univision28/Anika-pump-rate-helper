@@ -3,45 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anika Pump Helper</title>
+<title>Anika Pump Rate Helper</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-<h1>Anika Pump Helper</h1>
+<h1>Anika Pump Rate Helper</h1>
 
 <section class="card">
-<h2>Morning Setup</h2>
-<p>Fill the bottle with <strong>800ml of food</strong>, then top up to the brim with:</p>
-<ul>
-<li><strong>Boiled water</strong> if food was in the fridge</li>
-<li><strong>Tap water</strong> if food was on the bench</li>
-</ul>
+<h2>Morning Food Instructions</h2>
+<p>Fill the bottle with <strong>800ml of food</strong> and then top up to full with boiled or tap water.</p>
 </section>
 
 <section class="card">
-<h2>Afternoon Setup</h2>
+<h2>Afternoon Water Instructions</h2>
 <p>Fill the bottle with <strong>water only</strong>.</p>
 </section>
 
 <section class="card">
-<h2>Rate Calculator</h2>
-<label>Target Finish Time:</label>
-<select id="targetTime">
-<option value="19:30">7:30pm (Weekdays)</option>
-<option value="20:00">8:00pm (Weekends)</option>
-<option value="20:30">8:30pm (Water)</option>
-</select>
+<h2>Calculate Pump Rate</h2>
+<label>Total amount remaining (ml):</label>
+<input type="number" id="amountInput" placeholder="Enter remaining amount">
 
-<label>Current Time:</label>
-<input type="time" id="currentTime">
+<label>Hours until empty:</label>
+<input type="number" id="hoursInput" placeholder="Enter hours">
 
-<label>Amount Already Given (ml):</label>
-<input type="number" id="already" placeholder="0">
+<button onclick="calculateRate()">Calculate</button>
 
-<button onclick="calculate()">Calculate Rate</button>
-
-<div id="result" class="result"></div>
+<p id="result"></p>
 </section>
 
 </div>
