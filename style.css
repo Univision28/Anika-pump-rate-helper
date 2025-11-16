@@ -1,60 +1,16 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f4f8;
-  margin: 0;
-  padding: 0;
-}
 
-.container {
-  max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.card {
-  background: white;
-  padding: 18px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  border: none;
-  background: #0078d4;
-  color: white;
-  border-radius: 10px;
-  font-size: 16px;
-}
-
-button:hover {
-  background: #005fa3;
-}
-
-#result {
-  margin-top: 15px;
-  font-size: 18px;
-  font-weight: bold;
-}
+body { font-family: Arial, sans-serif; background: #f2f5f8; padding: 20px; }
+.container { max-width: 420px; margin: auto; background: white; padding: 20px;
+  border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+h1 { text-align: center; margin-bottom: 20px; }
+.mode-select { display: flex; gap: 10px; margin-bottom: 20px; }
+.mode { flex: 1; padding: 12px; border-radius: 25px; border: none; background: #dce2e9;
+  font-size: 16px; }
+.mode.active { background: #4c8bf5; color: white; }
+.instructions summary { font-size: 16px; cursor: pointer; padding: 8px 0; }
+label { display: block; margin-top: 15px; font-weight: bold; }
+input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; }
+.calculate { width: 100%; margin-top: 20px; padding: 14px; border-radius: 25px; border: none;
+  font-size: 18px; background: #4c8bf5; color: white; }
+.result { margin-top: 20px; padding: 15px; background: #e8f1ff; border-radius: 12px; font-size: 18px; }
+.hidden { display: none; }

@@ -1,39 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anika Pump Rate Helper</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anika Pump Rate Helper</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-<h1>Anika Pump Rate Helper</h1>
+  <div class="container">
+    <h1>Anika Pump Rate Helper</h1>
 
-<section class="card">
-<h2>Morning Food Instructions</h2>
-<p>Fill the bottle with <strong>800ml of food</strong> and then top up to full with boiled or tap water.</p>
-</section>
+    <div class="mode-select">
+      <button id="morningBtn" class="mode active">Morning Setup</button>
+      <button id="afternoonBtn" class="mode">Afternoon Catch‑Up</button>
+    </div>
 
-<section class="card">
-<h2>Afternoon Water Instructions</h2>
-<p>Fill the bottle with <strong>water only</strong>.</p>
-</section>
+    <div class="instructions">
+      <details>
+        <summary>Step‑by‑step instructions (brief)</summary>
+        <ul>
+          <li><strong>Morning:</strong> Fill bottle with 800 ml of food, then top up with boiled/tap water.</li>
+          <li><strong>Afternoon:</strong> Fill bottle with water only.</li>
+          <li>Enter amount already given (afternoon only).</li>
+          <li>Select finish time.</li>
+          <li>Tap "Calculate" to get pump rate.</li>
+        </ul>
+      </details>
+    </div>
 
-<section class="card">
-<h2>Calculate Pump Rate</h2>
-<label>Total amount remaining (ml):</label>
-<input type="number" id="amountInput" placeholder="Enter remaining amount">
+    <div id="afternoonInput" class="hidden">
+      <label>Amount already given (ml):</label>
+      <input id="givenInput" type="number" min="0" />
+    </div>
 
-<label>Hours until empty:</label>
-<input type="number" id="hoursInput" placeholder="Enter hours">
+    <label>Finish time:</label>
+    <select id="finishTime">
+      <option value="17">5:00 pm</option>
+      <option value="18">6:00 pm</option>
+      <option value="19">7:00 pm</option>
+    </select>
 
-<button onclick="calculateRate()">Calculate</button>
+    <button id="calcBtn" class="calculate">Calculate</button>
 
-<p id="result"></p>
-</section>
+    <div id="result" class="result hidden"></div>
+  </div>
 
-</div>
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
