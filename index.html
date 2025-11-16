@@ -1,36 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anika Pump Rate Helper</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="card">
-<h2>Anika Pump Rate Helper</h2>
-<div class="field">
-<label>Starting Volume (mL)</label>
-<input type="number" id="startVol">
-<p class="helper">The amount currently in the PEG bag before the change.</p>
-</div>
+  <main class="wrap" role="main">
+    <header class="header">
+      <h1>Anika Pump Rate Helper</h1>
+      <p class="subtitle">Simple, reliable calculator to set Anika’s pump. Works on iPhone — follow the steps below.</p>
+    </header>
 
-<div class="field">
-<label>Ending Volume (mL)</label>
-<input type="number" id="endVol">
-<p class="helper">The amount left after the previous session.</p>
-</div>
+    <section class="card">
+      <div class="row split">
+        <div>
+          <label class="label">Mode</label>
+          <div class="modes">
+            <button id="btnMorning" class="mode active">Morning setup</button>
+            <button id="btnAfternoon" class="mode">Afternoon catch‑up</button>
+          </div>
+        </div>
+        <div class="rules">
+          <strong>Rules</strong>
+          <div class="small">Morning = 2500 ÷ hours left. Catch‑up = (2500 − INFO) ÷ hours left. Never set above 300 ml/hr.</div>
+        </div>
+      </div>
 
-<div class="field">
-<label>Time Since Last Check (hours)</label>
-<input type="number" id="hours">
-<p class="helper">How long it has been since the last nappy change or check.</p>
-</div>
+      <hr>
 
-<button onclick="calculate()">Calculate</button>
+      <div id="morningPanel" class="panel">
+        <label class="label">Current time</label>
+        <div class="time-row">
+          <select id="mHour" class="time-select"></select>
+          <select id="mMinute" class="time-select"></select>
+          <select id="mAM" class="time-select ampm"><option>AM</option><option>PM</option></select>
+          <button id="nowMorning" class="btn small">Now</button>
+        </div>
 
-<div id="result" class="result"></div>
-</div>
+        <label class="label" style="margin-top:12px;">Finish time (target)</label>
+        <select id="mFinishPreset" class="full">
+          <option value="preset_weekday">7:30 pm (weekday)</option>
+          <option value="preset_weekend">8:00 pm (weekend)</option>
+          <option value="custom">Custom…</option>
+        </select>
+
+        <div id="mFinishCustom" class="time-row hidden" style="margin-top:8px;">
+          <select id="mFH" class="time-select"></select>
+          <select id="mFM" class="time-select"></select>
+          <select id="mFAM" class="time-select ampm"><option>AM</option><option>PM</option></select>
+        </div>
+      </div>
+
+      <div id="afternoonPanel" class="panel hidden">
+        <label class="label">INFO already given (ml)</label>
+        <input id="aInfo" type="number" min="0" step="1" value="0" class="full">
+
+        <label class="label" style="margin-top:12px;">Current time</label>
+        <div class="time-row">
+          <select id="aHour" class="time-select"></select>
+          <select id="aMinute" class="time-select"></select>
+          <select id="aAM" class="time-select ampm"><option>AM</option><option>PM</option></select>
+          <button id="nowAfternoon" class="btn small">Now</button>
+        </div>
+
+        <label class="label" style="margin-top:12px;">Finish time (target)</label>
+        <select id="aFinishPreset" class="full">
+          <option value="20:30">8:30 pm</option>
+          <option value="21:00">9:00 pm</option>
+          <option value="custom">Custom…</option>
+        </select>
+
+        <div id="aFinishCustom" class="time-row hidden" style="margin-top:8px;">
+          <select id="aFH" class="time-select"></select>
+          <select id="aFM" class="time-select"></select>
+          <select id="aFAM" class="time-select ampm"><option>AM</option><option>PM</option></select>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-main">
+          <div class="result-label">Set pump to</div>
+          <div id="rateDisplay" class="rate">0 ml/hr</div>
+        </div>
+        <div id="resultSub" class="result-sub">Waiting for times and INFO</div>
+
+        <div id="warning" class="warning hidden">
+          Calculated rate exceeds the safe maximum of <strong>300 ml/hr</strong>. Please call Shannon. Rate capped at 300 ml/hr.
+        </div>
+
+        <div id="estFinish" class="small muted"></div>
+      </div>
+
+      <details class="instructions">
+        <summary>Step-by-step instructions (brief)</summary>
+        <ol>
+          <li>Bring pump & charger to the kitchen and tip out any old water.</li>
+          <li>Check giving set is clean; if not, follow cleaning instructions.</li>
+          <li>Fill bottle with 800ml food then top-up with boiled/tap water as required.</li>
+          <li>Connect bottle to giving set and hang.</li>
+          <li>In the app choose <em>Morning</em> or <em>Afternoon</em> and enter times/INFO as required.</li>
+          <li>Set the pump to the rate shown. Never exceed 300 ml/hr. Call Shannon if the rate is capped.</li>
+        </ol>
+      </details>
+    </section>
+
+    <footer class="footer small muted">
+      If anything looks wrong, pause and call Shannon or follow the written care plan. This tool provides calculations only.
+    </footer>
+  </main>
 
 <script src="script.js"></script>
 </body>
