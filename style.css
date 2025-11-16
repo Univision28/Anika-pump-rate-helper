@@ -1,30 +1,20 @@
 
-body {
-  font-family: sans-serif;
-  padding: 20px;
-  background: #f4f4f4;
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+.container { max-width:600px; margin:20px auto; padding:20px; }
+h1 { text-align:center; margin-bottom:20px; }
+.card {
+ background:white; padding:20px; border-radius:12px; margin-bottom:20px;
+ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
-.block {
-  background: white;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+label { display:block; margin-top:15px; font-weight:bold; }
+input, select {
+ width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;
 }
-h2, h3 { margin-top: 0; }
 button {
-  margin-top: 10px;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  background: #4CAF50;
-  color: white;
-  font-size: 16px;
-  border-radius: 8px;
+ width:100%; padding:15px; margin-top:20px; background:#0077cc; color:white;
+ border:none; border-radius:10px; font-size:18px;
 }
-#result {
-  margin-top: 15px;
-  font-size: 20px;
-  font-weight: bold;
-  color: green;
+.result {
+ margin-top:20px; padding:15px; background:#e0ffe0; border-left:5px solid #1a7f1a;
+ font-size:20px; font-weight:bold;
 }

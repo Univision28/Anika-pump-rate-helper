@@ -1,49 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anika Pump Helper</title>
 <link rel="stylesheet" href="style.css">
-<script defer src="script.js"></script>
 </head>
 <body>
+<div class="container">
+<h1>Anika Pump Helper</h1>
 
-<h2>Anika Pump Helper</h2>
-
-<section class="block">
-  <h3>Morning Setup</h3>
-  <p>Fill the bottle with <strong>800ml of food</strong>, then top up to the brim with:</p>
-  <ul>
-    <li><strong>Boiled water</strong> (if food was in the fridge)</li>
-    <li><strong>Tap water</strong> (if food was on the bench)</li>
-  </ul>
+<section class="card">
+<h2>Morning Setup</h2>
+<p>Fill the bottle with <strong>800ml of food</strong>, then top up to the brim with:</p>
+<ul>
+<li><strong>Boiled water</strong> if food was in the fridge</li>
+<li><strong>Tap water</strong> if food was on the bench</li>
+</ul>
 </section>
 
-<section class="block">
-  <h3>Afternoon Setup</h3>
-  <p>Fill the bottle with <strong>water only</strong>.</p>
+<section class="card">
+<h2>Afternoon Setup</h2>
+<p>Fill the bottle with <strong>water only</strong>.</p>
 </section>
 
-<section class="block">
-  <h3>Rate Calculator</h3>
-  <label>Mode:</label>
-  <select id="mode">
-    <option value="morning">Morning (Starts from 0ml)</option>
-    <option value="afternoon">Afternoon (Uses INFO amount)</option>
-  </select>
+<section class="card">
+<h2>Rate Calculator</h2>
+<label>Target Finish Time:</label>
+<select id="targetTime">
+<option value="19:30">7:30pm (Weekdays)</option>
+<option value="20:00">8:00pm (Weekends)</option>
+<option value="20:30">8:30pm (Water)</option>
+</select>
 
-  <label>INFO Amount (ml):</label>
-  <input type="number" id="infoAmount" value="0">
+<label>Current Time:</label>
+<input type="time" id="currentTime">
 
-  <label>Hours Remaining:</label>
-  <input type="number" id="hours" value="0">
+<label>Amount Already Given (ml):</label>
+<input type="number" id="already" placeholder="0">
 
-  <label>Minutes Remaining:</label>
-  <input type="number" id="minutes" value="0">
+<button onclick="calculate()">Calculate Rate</button>
 
-  <button onclick="calculateRate()">Calculate Rate</button>
-
-  <div id="result"></div>
+<div id="result" class="result"></div>
 </section>
 
+</div>
+<script src="script.js"></script>
 </body>
 </html>
