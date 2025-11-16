@@ -1,50 +1,110 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anika Pump Rate Helper</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Anika Pump Rate Helper</title>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Anika Pump Rate Helper</h1>
+  <main class="wrap" role="main">
+    <header class="header">
+      <h1>Anika Pump Rate Helper</h1>
+      <p class="subtitle">Simple, reliable calculator to set Anika’s pump. Works on iPhone — follow the steps below.</p>
+    </header>
 
-    <div class="mode-select">
-      <button id="morningBtn" class="mode active">Morning Setup</button>
-      <button id="afternoonBtn" class="mode">Afternoon Catch‑Up</button>
-    </div>
+    <section class="card">
+      <div class="row top-row">
+        <div class="modes" role="tablist" aria-label="Mode">
+          <button id="modeMorning" class="mode active" aria-pressed="true">Morning setup</button>
+          <button id="modeAfternoon" class="mode" aria-pressed="false">Afternoon catch‑up</button>
+        </div>
+        <div class="rules">
+          <strong>Rules</strong>
+          <div class="small">Morning = 2500 ÷ hours left. Catch‑up = (2500 − INFO) ÷ hours left. Never set above 300 ml/hr.</div>
+        </div>
+      </div>
 
-    <div class="instructions">
-      <details>
-        <summary>Step‑by‑step instructions (brief)</summary>
-        <ul>
-          <li><strong>Morning:</strong> Fill bottle with 800 ml of food, then top up with boiled/tap water.</li>
-          <li><strong>Afternoon:</strong> Fill bottle with water only.</li>
-          <li>Enter amount already given (afternoon only).</li>
-          <li>Select finish time.</li>
-          <li>Tap "Calculate" to get pump rate.</li>
-        </ul>
+      <hr>
+
+      <div id="mainControls">
+        <div class="field">
+          <label>Current time</label>
+          <div class="time-row">
+            <select id="currentHour" class="time-select"></select>
+            <select id="currentMinute" class="time-select"></select>
+            <select id="currentAM" class="time-select ampm"><option>AM</option><option>PM</option></select>
+            <button id="nowBtn" class="btn small">Now</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Finish time (target)</label>
+          <select id="finishPreset" class="full">
+            <option value="preset_weekday">7:30 pm (weekday)</option>
+            <option value="preset_weekend">8:00 pm (weekend)</option>
+            <option value="20:30">8:30 pm (water)</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
+
+        <div id="customFinish" class="field hidden">
+          <label>Custom finish time</label>
+          <div class="time-row">
+            <select id="finishHour" class="time-select"></select>
+            <select id="finishMinute" class="time-select"></select>
+            <select id="finishAM" class="time-select ampm"><option>AM</option><option>PM</option></select>
+          </div>
+        </div>
+
+        <div id="infoRow" class="field hidden">
+          <label>INFO already given (ml)</label>
+          <input id="infoInput" type="number" min="0" step="1" value="0" class="full" />
+          <div class="hint small muted">Enter the INFO reading from the pump for catch‑up mode. Morning starts from 0.</div>
+        </div>
+      </div>
+
+      <div class="result-card" id="resultCard">
+        <div class="result-main">
+          <div class="result-label">Set pump to</div>
+          <div id="rateDisplay" class="rate">0 ml/hr</div>
+        </div>
+        <div id="resultSub" class="result-sub muted">Waiting for times and INFO</div>
+
+        <div id="warning" class="warning hidden">
+          Calculated rate exceeds the safe maximum of <strong>300 ml/hr</strong>. The helper has capped the rate at 300 ml/hr. Please call Shannon.
+        </div>
+
+        <div id="estFinish" class="small muted"></div>
+
+        <div class="calc-actions">
+          <button id="calcBtn" class="calc-btn">Calculate</button>
+          <button id="resetBtn" class="reset-btn">Reset</button>
+        </div>
+      </div>
+
+      <details class="instructions">
+        <summary>Step-by-step instructions (brief)</summary>
+        <div id="instructionsText">
+          <ol>
+            <li>Bring pump & charger to the kitchen and tip out any old water.</li>
+            <li>Check giving set is clean; if not, follow cleaning instructions.</li>
+            <li id="instrMorning"><strong>Morning:</strong> Fill bottle with 800ml food then top‑up with boiled/tap water.</li>
+            <li id="instrAfternoon"><strong>Afternoon:</strong> Fill bottle with water only.</li>
+            <li>Connect bottle to giving set and hang. If needed, fill the set (see filling instructions).</li>
+            <li>In the app choose <em>Morning</em> or <em>Afternoon</em> and enter times/INFO as required.</li>
+            <li>Set the pump to the rate shown. Never exceed 300 ml/hr. Call Shannon if capped.</li>
+          </ol>
+        </div>
       </details>
-    </div>
+    </section>
 
-    <div id="afternoonInput" class="hidden">
-      <label>Amount already given (ml):</label>
-      <input id="givenInput" type="number" min="0" />
-    </div>
+    <footer class="footer small muted">
+      If anything looks wrong, pause and call Shannon or follow the written care plan. This tool provides calculations only.
+    </footer>
+  </main>
 
-    <label>Finish time:</label>
-    <select id="finishTime">
-      <option value="17">5:00 pm</option>
-      <option value="18">6:00 pm</option>
-      <option value="19">7:00 pm</option>
-    </select>
-
-    <button id="calcBtn" class="calculate">Calculate</button>
-
-    <div id="result" class="result hidden"></div>
-  </div>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
